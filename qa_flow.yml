@@ -1,0 +1,20 @@
+id: decrypt_invoice
+namespace: qa.crypto
+description: QA for kestra-io/plugin-crypto#126 - decrypt an invoice encrypted with GnuPG (SEIP + MDC, no compression)
+
+inputs:
+  - id: encrypted
+    type: FILE
+  - id: private_key
+    type: FILE
+
+tasks:
+  - id: decrypt
+    type: io.kestra.plugin.crypto.openpgp.Decrypt
+    from: "{{ inputs.encrypted }}"
+    privateKey: "{{ read(inputs.private_key) }}"
+    privateKeyPassphrase: abc456
+
+  - id: show
+    type: io.kestra.plugin.core.log.Log
+    message: "{{ read(outputs.decrypt.uri) }}"
